@@ -2,7 +2,8 @@ import { useQuery } from "@apollo/client"
 import { 
   Container, Heading, Button, Spinner,
   Center, Table, Thead, Tbody,
-  Tr, Th, Td, TableContainer, useColorModeValue as mode, Stack
+  Tr, Th, Td, TableContainer, useColorModeValue as mode, Stack, 
+  Alert, AlertIcon, AlertTitle, AlertDescription, CloseButton, Box
 } from "@chakra-ui/react"
 import Link from "next/link"
 import { useRouter } from "next/router"
@@ -10,26 +11,34 @@ import { useEffect } from "react"
 import { GET_PRODUCTS } from "../query/schema"
 import { IoAdd } from 'react-icons/io5'
 import { AppLayout } from "../layout/AppLayout"
-
-const pager = (count, current, pages = 6) => {
-  const half = parseInt(pages / 2)
-  const start = parseInt(current || 0) - half
-  return [...Array(pages).keys()]
-    .map(r => start + r)
-    .filter(r => r > 0 && r <= count)
-}
+import { useState } from "react"
 
 export default function Home() {
   const { loading, error, data, refetch } = useQuery(GET_PRODUCTS)
-
+  const [show, setShow] = useState(false)
+  const [message, setMessage] = useState('')
   const router = useRouter()
 
   useEffect(() => {
-    refetch()
-  }, [])
+    if (router.isReady) {
+      const { message } = router.query
+
+      console.log(message)
+      console.log(show)
+
+      if (message !== undefined) {
+        setMessage(message)
+        console.log(message)
+        console.log(show)
+        setShow(true)
+      }
+
+      refetch()
+    }
+  }, [router.isReady])
 
   if (loading) return (
-    <Center h="750px">
+    <Center bg={mode('white', 'gray.900')} minH="100vh">
       <Spinner size="xl" color="orange.500" />
     </Center> 
   )
@@ -41,20 +50,22 @@ export default function Home() {
   return (
     <AppLayout>  
       <Container maxW="container.lg">
-        <Stack direction={{ base: 'column', md: 'row' }} w="full" justify="space-between" spacing={6} mb={8}>
+        <Stack direction={{ base: 'column', md: 'row' }} w="full" justify="space-between" spacing={6} pb={8}>
           <Heading size="lg" color="orange.500">All Food Products</Heading>
           <Link href="/add">
             <Button
               size="md"
               rounded="full"
+              _hover={{ bg: 'orange.200', transform: 'scale(1.05)', transition: 'all 300ms ease' }}
+              _active={{ bg: 'orange.200' }}
+              _focus={{ borderColor: 'orange.500' }} 
               bg="orange.500"
               color="white"
-              _focus={{ borderColor: 'white' }}
               leftIcon={<IoAdd color="white" />}
               mb={8}>Add Product</Button>
           </Link>
         </Stack>
-        <TableContainer borderRadius="md" mb={8}>
+        <TableContainer borderRadius="md" pb={8}>
           <Table variant="striped" colorScheme="orange">
             <Thead>
               <Tr>
@@ -75,17 +86,23 @@ export default function Home() {
                     <Td pb={6}>{item.unitsOnOrder}</Td>
                     <Td pb={6}>                
                       <Button 
-                      bg="orange.500"
-                      color="white"
-                      rounded="full"
-                        onClick={() => {
-                        router.push({
-                          pathname: "/product",
-                          query: {
-                            id: item._id
-                          }
-                        })
-                      }}>View</Button>
+                        _hover={{ bg: 'orange.200', transform: 'scale(1.05)', transition: 'all 300ms ease' }}
+                        _active={{ bg: 'orange.200' }}
+                        _focus={{ borderColor: 'orange.500' }} 
+                        bg="orange.500"
+                        color="white"
+                        rounded="full"
+                          onClick={() => {
+                          router.push({
+                            pathname: "/product",
+                            query: {
+                              id: item._id,
+                              message: ''
+                            }
+                          })
+                        }}>
+                          View
+                      </Button>
                     </Td>
                   </Tr>
                 ))
@@ -93,6 +110,21 @@ export default function Home() {
             </Tbody>
           </Table>
         </TableContainer>
+        <Alert display={show == true ? 'flex' : 'none'} status='success' py={8}>
+          <AlertIcon />
+          <Box>
+            <AlertTitle>Success!</AlertTitle>
+            <AlertDescription>
+              {message}
+            </AlertDescription>
+            <CloseButton
+              position='absolute'
+              right={1}
+              top={1}
+              onClick={() => setShow(false)}
+            />
+          </Box>
+        </Alert>
       </Container>
     </AppLayout>
   )

@@ -1,5 +1,9 @@
 import { useMutation } from "@apollo/client"
-import { Box, Container, Heading, Text, Input, Button, Spinner, Center, HStack, IconButton } from "@chakra-ui/react"
+import { 
+  Box, Container, Heading, Text, Input, Button, 
+  Spinner, Center, HStack, IconButton, useDisclosure,
+  useColorModeValue as mode
+} from "@chakra-ui/react"
 import Link from "next/link"
 import { useRouter } from "next/router"
 import { useState } from "react"
@@ -13,26 +17,29 @@ export default function Add() {
   const [unitPrice, setUnitPrice] = useState(0)
   const [unitsInStock, setUnitsInStock] = useState(0)
   const [unitsOnOrder, setUnitsOnOrder] = useState(0)
+  const { isOpen, onOpen, onClose } = useDisclosure()
 
   const [ createProduct, { data, loading, error } ] = useMutation(CREATE_PRODUCT)
 
   const router = useRouter()
 
-  if (loading) return (
-    <Center h="750px">
+  if (loading) {
+    return (
+    <Center bg={mode('white', 'gray.900')} minH="100vh">
       <Spinner size="xl" color="orange.500" />
     </Center> 
-  )
+    )
+  }
   if (error) console.log(error)
   if (data) {
-    alert("Product Added Succesfully!")
     router.push({
       pathname: "/product",
       query: {
-        id: data.createProduct.recordId
+        id: data.createProduct.recordId,
+        message: "Product Added Succesfully!"
       }
     })
-  } 
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -63,8 +70,10 @@ export default function Add() {
               <IconButton
                 size="sm"
                 rounded="full"
+                _hover={{ bg: 'orange.200', transform: 'scale(1.05)', transition: 'all 300ms ease' }}
+                _active={{ bg: 'orange.200' }}
+                _focus={{ borderColor: 'orange.500' }} 
                 bg="orange.500"
-                _focus={{ borderColor: 'white' }}
                 icon={<BsArrowLeft color="white" />}
               />
             </Link>  
@@ -81,7 +90,7 @@ export default function Add() {
           <Input 
             placeholder="Enter product price"
             focusBorderColor="orange.500"
-            onChange={(e) => setName(e.target.value)}
+            onChange={(e) => setUnitPrice(safeParseFloat(e.target.value))}
             mb={6}
           />
           <Text mb={2}>Units In Stock</Text>
@@ -98,14 +107,16 @@ export default function Add() {
             focusBorderColor="orange.500"
             onChange={(e) => setUnitsOnOrder(safeParseFloat(e.target.value))}
             min="0"
-            mb={8}
+            mb={12}
           />
           <Button
             size="md"
             rounded="full"
+            _hover={{ bg: 'orange.200', transform: 'scale(1.05)', transition: 'all 300ms ease' }}
+            _active={{ bg: 'orange.200' }}
+            _focus={{ borderColor: 'orange.500' }} 
             bg="orange.500"
             color="white"
-            _focus={{ borderColor: 'white' }}
             leftIcon={<IoAdd color="white" />}
             onClick={(e) => {
               handleSubmit(e)

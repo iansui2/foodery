@@ -1,5 +1,5 @@
 import { useMutation } from "@apollo/client"
-import { Box, Center, Spinner } from "@chakra-ui/react"
+import { Box, Center, Spinner, useColorModeValue as mode } from "@chakra-ui/react"
 import { useRouter } from "next/router"
 import { useEffect } from "react"
 import { UPDATE_PRODUCT } from "../query/schema"
@@ -25,17 +25,17 @@ export default function Update() {
   }, [router.isReady])
 
   if (loading) return (
-    <Center h="750px">
+    <Center bg={mode('white', 'gray.900')} minH="100vh">
       <Spinner size="xl" color="orange.500" />
     </Center> 
   )
   if (error) console.log(error)
   if (data) {
-    alert("Product Updated Succesfully!")
     router.push({
       pathname: "/product",
       query: {
-        id: data.updateProduct.recordId
+        id: data.updateProduct.recordId,
+        message: "Product Updated Succesfully!"
       }
     })
   }

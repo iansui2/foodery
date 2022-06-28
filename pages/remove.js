@@ -1,5 +1,5 @@
 import { useMutation } from "@apollo/client"
-import { Box, Center, Spinner } from "@chakra-ui/react"
+import { Box, Center, Spinner, useColorModeValue as mode } from "@chakra-ui/react"
 import { useEffect } from "react"
 import { REMOVE_PRODUCT } from "../query/schema"
 import { useRouter } from 'next/router'
@@ -17,14 +17,18 @@ export default function Remove() {
   }, [router.isReady])
 
   if (loading) return (
-    <Center h="750px">
+    <Center bg={mode('white', 'gray.900')} minH="100vh">
       <Spinner size="xl" color="orange.500" />
     </Center> 
   )
   if (error) console.log(error)
   if (data) {
-    alert("Product Deleted Succesfully!")
-    router.push("/")
+    router.push({
+      pathname: "/",
+      query: {
+        message: "Product Removed Succesfully!"
+      }
+    })
   }
 
   const handleDelete = (id) => {

@@ -1,5 +1,9 @@
 import { useQuery } from "@apollo/client"
-import { Box, Container, Heading, Text, Input, Button, HStack, Spinner, Center, IconButton } from "@chakra-ui/react"
+import { 
+  Box, Container, Heading, Text, Input, Button, HStack, 
+  Spinner, Center, IconButton, Alert, AlertIcon, AlertTitle, 
+  AlertDescription, useColorModeValue as mode, CloseButton 
+} from "@chakra-ui/react"
 import Link from "next/link"
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
@@ -8,7 +12,9 @@ import { AppLayout } from "../layout/AppLayout"
 import { GET_PRODUCT } from "../query/schema"
 
 export default function Product() {
+  const [show, setShow] = useState(false)
   const [id, setId] = useState("")
+  const [message, setMessage] = useState("")
   const [name, setName] = useState("")
   const [unitPrice, setUnitPrice] = useState(0)
   const [unitsInStock, setUnitsInStock] = useState(0)
@@ -26,9 +32,14 @@ export default function Product() {
 
   useEffect(() => {
     if (router.isReady) {
-      const { id } = router.query
+      const { id, message } = router.query
 
       setId(id)
+
+      if (message != '') {
+        setMessage(message)
+        setShow(true)
+      }
 
       if (data) {
         setName(data.viewer.product.name)  
@@ -42,7 +53,7 @@ export default function Product() {
   }, [router.isReady, data])
 
   if (loading) return (
-    <Center h="750px">
+    <Center bg={mode('white', 'gray.900')} minH="100vh">
       <Spinner size="xl" color="orange.500" />
     </Center> 
   )
@@ -62,8 +73,10 @@ export default function Product() {
               <IconButton
                 size="sm"
                 rounded="full"
+                _hover={{ bg: 'orange.200', transform: 'scale(1.05)', transition: 'all 300ms ease' }}
+                _active={{ bg: 'orange.200' }}
+                _focus={{ borderColor: 'orange.500' }} 
                 bg="orange.500"
-                _focus={{ borderColor: 'white' }}
                 icon={<BsArrowLeft color="white" />}
               />
             </Link>  
@@ -98,10 +111,13 @@ export default function Product() {
             focusBorderColor="orange.500"
             min="0"
             onChange={(e) => setUnitsOnOrder(safeParseFloat(e.target.value))}
-            mb={8}
+            mb={12}
           />
           <HStack spacing={4}>
             <Button 
+              _hover={{ bg: 'orange.200', transform: 'scale(1.05)', transition: 'all 300ms ease' }}
+              _active={{ bg: 'orange.200' }}
+              _focus={{ borderColor: 'orange.500' }} 
               bg="orange.500"
               color="white"
               rounded="full"
@@ -122,6 +138,9 @@ export default function Product() {
                 })
               }}>Update</Button>
             <Button 
+              _hover={{ bg: 'orange.200', transform: 'scale(1.05)', transition: 'all 300ms ease' }}
+              _active={{ bg: 'orange.200' }}
+              _focus={{ borderColor: 'orange.500' }} 
               bg="orange.500"
               color="white"
               rounded="full"
@@ -134,6 +153,21 @@ export default function Product() {
                 })
               }}>Delete</Button>
           </HStack>
+          <Alert display={show == true ? 'flex' : 'none'} status='success' mt={8}>
+            <AlertIcon />
+            <Box>
+              <AlertTitle>Success!</AlertTitle>
+              <AlertDescription>
+                {message}
+              </AlertDescription>
+              <CloseButton
+                position='absolute'
+                right={1}
+                top={1}
+                onClick={() => setShow(false)}
+              />
+            </Box>
+          </Alert>
         </Container>
       </Box>
     </AppLayout>
