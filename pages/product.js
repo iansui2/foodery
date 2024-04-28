@@ -1,6 +1,6 @@
 import { useQuery } from "@apollo/client"
 import { 
-  Box, Container, Heading, Text, Input, Button, HStack, 
+  Box, Container, Heading, Text, Input, Textarea, Button, HStack, 
   Spinner, Center, IconButton, Alert, AlertIcon, AlertTitle, 
   AlertDescription, useColorModeValue as mode, CloseButton 
 } from "@chakra-ui/react"
@@ -16,15 +16,12 @@ export default function Product() {
   const [id, setId] = useState("")
   const [message, setMessage] = useState("")
   const [name, setName] = useState("")
-  const [unitPrice, setUnitPrice] = useState(0)
-  const [unitsInStock, setUnitsInStock] = useState(0)
-  const [unitsOnOrder, setUnitsOnOrder] = useState(0)
+  const [desc, setDesc] = useState("")
+  const [price, setPrice] = useState("")
 
   const { loading, error, data, refetch } = useQuery(GET_PRODUCT, {
     variables: {
-      filter: {
-        _id: id
-      }
+      id: id
     }
   })
 
@@ -42,10 +39,9 @@ export default function Product() {
       }
 
       if (data) {
-        setName(data.viewer.product.name)  
-        setUnitPrice(data.viewer.product.unitPrice)
-        setUnitsInStock(data.viewer.product.unitsInStock)
-        setUnitsOnOrder(data.viewer.product.unitsOnOrder)
+        setName(data?.product?.productName)  
+        setDesc(data?.product?.productDescription)
+        setPrice(data?.product?.price)
       }
 
       refetch()
@@ -84,34 +80,28 @@ export default function Product() {
           </HStack>
           <Text mb={2}>Name</Text>
           <Input
+            placeholder="Enter product name"          
             value={name}
             focusBorderColor="orange.500" 
             onChange={(e) => setName(e.target.value)}
             mb={6}
           />
-          <Text mb={2}>Unit Price</Text>
-          <Input 
-            value={unitPrice}
+          <Text mb={2}>Description</Text>
+          <Textarea 
+            placeholder="Enter product description"
+            value={desc}
             focusBorderColor="orange.500"
-            min="0"
-            onChange={(e) => setUnitPrice(safeParseFloat(e.target.value))}
+            onChange={(e) => setDesc(e.target.value)}
             mb={6}
           />
-          <Text mb={2}>Units In Stock</Text>
+          <Text mb={2}>Price</Text>
           <Input 
-            value={unitsInStock}
+            placeholder="Enter product price"
+            value={price}
             focusBorderColor="orange.500"
             min="0"
-            onChange={(e) => setUnitsInStock(safeParseFloat(e.target.value))}
+            onChange={(e) => setPrice(safeParseFloat(e.target.value))}
             mb={6}
-          />
-          <Text mb={2}>Units On Order</Text>
-          <Input 
-            value={unitsOnOrder}
-            focusBorderColor="orange.500"
-            min="0"
-            onChange={(e) => setUnitsOnOrder(safeParseFloat(e.target.value))}
-            mb={12}
           />
           <HStack spacing={4}>
             <Button 
@@ -126,12 +116,11 @@ export default function Product() {
                   pathname: "/update",
                   query: {
                     object: JSON.stringify({
-                      recordId: id,
+                      id: id,
                       record: {
-                        name: name,
-                        unitPrice: unitPrice,
-                        unitsInStock: unitsInStock,
-                        unitsOnOrder: unitsOnOrder
+                        productName: name,
+                        productDescription: desc,
+                        price: price
                       }
                     })
                   }

@@ -23,13 +23,8 @@ export default function Home() {
     if (router.isReady) {
       const { message } = router.query
 
-      console.log(message)
-      console.log(show)
-
       if (message !== undefined) {
         setMessage(message)
-        console.log(message)
-        console.log(show)
         setShow(true)
       }
 
@@ -43,13 +38,10 @@ export default function Home() {
     </Center> 
   )
   if (error) console.log(error)
-  if (data) {
-    console.log(data)
-  }
 
   return (
     <AppLayout>  
-      <Container maxW="container.lg">
+      <Container maxW="container.xl">
         <Stack direction={{ base: 'column', md: 'row' }} w="full" justify="space-between" spacing={6} pb={8}>
           <Heading size="lg" color="orange.500">All Food Products</Heading>
           <Link href="/add">
@@ -65,51 +57,53 @@ export default function Home() {
               mb={8}>Add Product</Button>
           </Link>
         </Stack>
-        <TableContainer borderRadius="md" pb={8}>
-          <Table variant="striped" colorScheme="orange">
-            <Thead>
-              <Tr>
-                <Th pb={8} fontSize="xl" color={mode('black', 'white')} textTransform="capitalize">Name</Th>
-                <Th pb={8} fontSize="xl" color={mode('black', 'white')} textTransform="capitalize">Unit Price</Th>
-                <Th pb={8} fontSize="xl" color={mode('black', 'white')} textTransform="capitalize">Units In Stock</Th>
-                <Th pb={8} fontSize="xl" color={mode('black', 'white')} textTransform="capitalize">Units On Order</Th>
-                <Th pb={8} fontSize="xl" color={mode('black', 'white')} textTransform="capitalize">View</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {
-                data.viewer.productList.map((item, itemKey) => (
-                  <Tr key={itemKey}>
-                    <Td pb={6} fontWeight="semibold">{item.name}</Td>
-                    <Td pb={6}>{item.unitPrice}</Td>
-                    <Td pb={6}>{item.unitsInStock}</Td>
-                    <Td pb={6}>{item.unitsOnOrder}</Td>
-                    <Td pb={6}>                
-                      <Button 
-                        _hover={{ bg: 'orange.200', transform: 'scale(1.05)', transition: 'all 300ms ease' }}
-                        _active={{ bg: 'orange.200' }}
-                        _focus={{ borderColor: 'orange.500' }} 
-                        bg="orange.500"
-                        color="white"
-                        rounded="full"
-                          onClick={() => {
-                          router.push({
-                            pathname: "/product",
-                            query: {
-                              id: item._id,
-                              message: ''
-                            }
-                          })
-                        }}>
-                          View
-                      </Button>
-                    </Td>
+        {
+          data?.products ?
+            <TableContainer borderRadius="md" pb={8}>
+              <Table variant="striped" colorScheme="orange">
+                <Thead>
+                  <Tr>
+                    <Th pb={8} fontSize="xl" color={mode('black', 'white')} textTransform="capitalize">Food Name</Th>
+                    <Th pb={8} fontSize="xl" color={mode('black', 'white')} textTransform="capitalize">Food Description</Th>
+                    <Th pb={8} fontSize="xl" color={mode('black', 'white')} textTransform="capitalize">Food Price</Th>
+                    <Th pb={8} fontSize="xl" color={mode('black', 'white')} textTransform="capitalize">Action</Th>
                   </Tr>
-                ))
-              }
-            </Tbody>
-          </Table>
-        </TableContainer>
+                </Thead>
+                <Tbody>
+                  {
+                    data?.products.map((item, itemKey) => (
+                      <Tr key={itemKey}>
+                        <Td pb={6} fontWeight="semibold">{item.productName}</Td>
+                        <Td pb={6} width="100px">{item.productDescription}</Td>
+                        <Td pb={6}>{item.price}</Td>
+                        <Td pb={6}>                
+                          <Button 
+                            _hover={{ bg: 'orange.200', transform: 'scale(1.05)', transition: 'all 300ms ease' }}
+                            _active={{ bg: 'orange.200' }}
+                            _focus={{ borderColor: 'orange.500' }} 
+                            bg="orange.500"
+                            color="white"
+                            rounded="full"
+                              onClick={() => {
+                              router.push({
+                                pathname: "/product",
+                                query: {
+                                  id: item.id,
+                                  message: ''
+                                }
+                              })
+                            }}>
+                              View
+                          </Button>
+                        </Td>
+                      </Tr>
+                    ))
+                  }
+                </Tbody>
+              </Table>
+            </TableContainer> :
+            <Center><Heading size="lg">No Food Products Found</Heading></Center>
+        }
         <Alert display={show == true ? 'flex' : 'none'} status='success' py={8}>
           <AlertIcon />
           <Box>

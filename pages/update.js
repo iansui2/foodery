@@ -15,11 +15,10 @@ export default function Update() {
       const product = JSON.parse(object)
 
       handleUpdate(
-        product.recordId, 
-        product.record.name, 
-        product.record.unitPrice,
-        product.record.unitsInStock,
-        product.record.unitsOnOrder
+        product.id, 
+        product.record.productName, 
+        product.record.productDescription,
+        product.record.price
       )
     }
   }, [router.isReady])
@@ -34,21 +33,20 @@ export default function Update() {
     router.push({
       pathname: "/product",
       query: {
-        id: data.updateProduct.recordId,
+        id: data?.updateProduct?.id,
         message: "Product Updated Succesfully!"
       }
     })
   }
 
-  const handleUpdate = (id, name, unitPrice, unitsInStock, unitsOnOrder) => {
+  const handleUpdate = (id, title, body, price) => {
     updateProduct({
       variables: {
         id: id,
         record: {
-          name: name,
-          unitPrice: unitPrice,
-          unitsInStock: unitsInStock,
-          unitsOnOrder: unitsOnOrder
+          productName: title,
+          productDescription: body,
+          price: price
         }
       }
     })

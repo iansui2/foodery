@@ -1,6 +1,6 @@
 import { useMutation } from "@apollo/client"
 import { 
-  Box, Container, Heading, Text, Input, Button, 
+  Box, Container, Heading, Text, Input, Textarea, Button, 
   Spinner, Center, HStack, IconButton, useDisclosure,
   useColorModeValue as mode
 } from "@chakra-ui/react"
@@ -14,9 +14,8 @@ import { CREATE_PRODUCT } from "../query/schema"
 
 export default function Add() {
   const [name, setName] = useState("")
-  const [unitPrice, setUnitPrice] = useState(0)
-  const [unitsInStock, setUnitsInStock] = useState(0)
-  const [unitsOnOrder, setUnitsOnOrder] = useState(0)
+  const [desc, setDesc] = useState("")
+  const [price, setPrice] = useState("")
   const { isOpen, onOpen, onClose } = useDisclosure()
 
   const [ createProduct, { data, loading, error } ] = useMutation(CREATE_PRODUCT)
@@ -35,7 +34,7 @@ export default function Add() {
     router.push({
       pathname: "/product",
       query: {
-        id: data.createProduct.recordId,
+        id: data?.createProduct?.id,
         message: "Product Added Succesfully!"
       }
     })
@@ -47,10 +46,9 @@ export default function Add() {
     createProduct({
       variables: {
         record: {
-          name: name,
-          unitPrice: unitPrice,
-          unitsInStock: unitsInStock,
-          unitsOnOrder: unitsOnOrder
+          productName: name,
+          productDescription: desc,
+          price: price
         }
       }
     })
@@ -58,7 +56,7 @@ export default function Add() {
 
   const safeParseFloat = (str) => {
     const value = Number.parseFloat(str)
-    return Number.isNaN(value) ? 0 : value
+    return Number.isNaN(value) ? "" : value
   }
 
   return (
@@ -86,28 +84,21 @@ export default function Add() {
             onChange={(e) => setName(e.target.value)}
             mb={6}
           />
-          <Text mb={2}>Unit Price</Text>
+          <Text mb={2}>Description</Text>
+          <Textarea 
+            placeholder="Enter product description"
+            focusBorderColor="orange.500"
+            onChange={(e) => setDesc(e.target.value)}
+            mb={6}
+          />
+          <Text mb={2}>Price</Text>
           <Input 
             placeholder="Enter product price"
+            value={price}
             focusBorderColor="orange.500"
-            onChange={(e) => setUnitPrice(safeParseFloat(e.target.value))}
-            mb={6}
-          />
-          <Text mb={2}>Units In Stock</Text>
-          <Input 
-            placeholder="Enter units in stock"
-            focusBorderColor="orange.500"
-            onChange={(e) => setUnitsInStock(safeParseFloat(e.target.value))}
             min="0"
+            onChange={(e) => setPrice(safeParseFloat(e.target.value))}
             mb={6}
-          />
-          <Text mb={2}>Units in Order</Text>
-          <Input 
-            placeholder="Enter units in order"
-            focusBorderColor="orange.500"
-            onChange={(e) => setUnitsOnOrder(safeParseFloat(e.target.value))}
-            min="0"
-            mb={12}
           />
           <Button
             size="md"

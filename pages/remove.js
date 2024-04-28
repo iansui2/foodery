@@ -34,9 +34,7 @@ export default function Remove() {
   const handleDelete = (id) => {
     removeProduct({ 
       variables: {
-        filter: {
-          _id: id
-        }
+        id: id
       }
     })
   }

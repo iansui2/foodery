@@ -1,64 +1,56 @@
 import { gql } from "@apollo/client";
 
 export const GET_PRODUCT = gql`
-  query GetProduct($filter: FilterFindOneProductInput) {
-    viewer {
-      product(filter: $filter) {
-        name
-        unitPrice
-        unitsInStock
-        unitsOnOrder
-      }
+  query GetProduct($id: ID!) {
+    product(where: { id: $id }) {
+      id
+      productName
+      productDescription
+      price
     }
   }
-`
+`;
 
 export const GET_PRODUCTS = gql`
   query GetProducts {
-    viewer {
-      productList {
-        _id
-        name
-        unitPrice
-        unitsInStock
-        unitsOnOrder
-      }
+    products {
+      id
+      productName
+      productDescription
+      price
     }
   }
-`
+`;
 
 export const CREATE_PRODUCT = gql`
-  mutation CreateProduct($record: CreateOneProductInput!) {
-    createProduct(record: $record) {
-      recordId,
-      record {
-        name,
-        unitPrice,
-        unitsInStock,
-        unitsOnOrder
-      }
+  mutation CreateProduct($record: ProductCreateInput!) {
+    createProduct(data: $record) {
+      id,
+      productName
+      productDescription
+      price
     }
   }
-  `
+`;
 
 export const UPDATE_PRODUCT = gql`
-  mutation UpdateProduct($id: MongoID!, $record: UpdateByIdProductInput!) {
-    updateProduct(_id: $id, record: $record) {
-      recordId,
-      record {
-        name,
-        quantityPerUnit,
-        unitPrice,
-        unitsInStock,
-        unitsOnOrder
-      }
+  mutation UpdateProduct($id: ID!, $record: ProductUpdateInput!) {
+    updateProduct(
+      where: { id: $id }
+      data: $record
+    ) {
+      id,
+      productName
+      productDescription
+      price
     }
   }
-  `
+`;
 
 export const REMOVE_PRODUCT = gql`
-  mutation RemoveProduct($filter: FilterRemoveOneProductInput) {
-    removeProduct(filter: $filter) {
-      recordId
+  mutation RemoveProduct($id: ID!) {
+    deleteProduct(where: { id: $id }) {
+      id
     }
-}`  
+  }
+`;
