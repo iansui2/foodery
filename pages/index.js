@@ -41,7 +41,7 @@ export default function Home() {
 
   return (
     <AppLayout>  
-      <Container maxW="container.xl">
+      <Container minH="100vh" maxW="container.xl">
         <Stack direction={{ base: 'column', md: 'row' }} w="full" justify="space-between" spacing={6} pb={8}>
           <Heading size="lg" color="orange.500">All Food Products</Heading>
           <Link href="/add">
