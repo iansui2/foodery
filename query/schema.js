@@ -47,6 +47,19 @@ export const UPDATE_PRODUCT = gql`
   }
 `;
 
+export const PUBLISH_PRODUCT = gql`
+  mutation PublishProduct($id: ID!) {
+    publishProduct(
+      where: { id: $id }
+    ) {
+      id
+      productName
+      productDescription
+      price
+    }
+  }
+`;
+
 export const REMOVE_PRODUCT = gql`
   mutation RemoveProduct($id: ID!) {
     deleteProduct(where: { id: $id }) {

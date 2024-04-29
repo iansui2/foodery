@@ -10,7 +10,7 @@ import { useState } from "react"
 import { BsArrowLeft } from "react-icons/bs"
 import { IoAdd } from 'react-icons/io5'
 import { AppLayout } from "../layout/AppLayout"
-import { CREATE_PRODUCT } from "../query/schema"
+import { CREATE_PRODUCT, PUBLISH_PRODUCT } from "../query/schema"
 
 export default function Add() {
   const [name, setName] = useState("")
@@ -18,26 +18,34 @@ export default function Add() {
   const [price, setPrice] = useState("")
   const { isOpen, onOpen, onClose } = useDisclosure()
 
-  const [ createProduct, { data, loading, error } ] = useMutation(CREATE_PRODUCT)
+  const [createProduct, { data: createData, loading: createLoading, error: createError }] = useMutation(CREATE_PRODUCT, {
+    onCompleted: (data) => {
+      publishProduct({ variables: { id: data?.createProduct?.id } });
+    },
+  });
+  
+  const [publishProduct, { data: publishData, loading: publishLoading, error: publishError }] = useMutation(PUBLISH_PRODUCT);
 
   const router = useRouter()
 
-  if (loading) {
+  if (createLoading || publishLoading) {
     return (
-    <Center bg={mode('white', 'gray.900')} minH="100vh">
-      <Spinner size="xl" color="orange.500" />
-    </Center> 
-    )
+      <Center bg={mode('white', 'gray.900')} minH="100vh">
+        <Spinner size="xl" color="orange.500" />
+      </Center>
+    );
   }
-  if (error) console.log(error)
-  if (data) {
+  
+  if (createError || publishError) console.log(createError, publishError);
+  
+  if (publishData) {
     router.push({
       pathname: "/product",
       query: {
-        id: data?.createProduct?.id,
-        message: "Product Added Succesfully!"
+        id: publishData?.publishProduct?.id,
+        message: "Product Added Successfully!"
       }
-    })
+    });
   }
 
   const handleSubmit = (e) => {

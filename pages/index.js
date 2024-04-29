@@ -75,7 +75,7 @@ export default function Home() {
                       <Tr key={itemKey}>
                         <Td pb={6} fontWeight="semibold">{item.productName}</Td>
                         <Td pb={6} width="100px">{item.productDescription}</Td>
-                        <Td pb={6}>{item.price}</Td>
+                        <Td pb={6}>{`₱ ${item.price}`}</Td>
                         <Td pb={6}>                
                           <Button 
                             _hover={{ bg: 'orange.200', transform: 'scale(1.05)', transition: 'all 300ms ease' }}

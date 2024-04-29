@@ -2,10 +2,15 @@ import { useMutation } from "@apollo/client"
 import { Box, Center, Spinner, useColorModeValue as mode } from "@chakra-ui/react"
 import { useRouter } from "next/router"
 import { useEffect } from "react"
-import { UPDATE_PRODUCT } from "../query/schema"
+import { UPDATE_PRODUCT, PUBLISH_PRODUCT } from "../query/schema"
 
 export default function Update() {
-  const [ updateProduct, { data, loading, error } ] = useMutation(UPDATE_PRODUCT)
+  const [ updateProduct, { data: updateData, loading: updateLoading, error: updateError } ] = useMutation(UPDATE_PRODUCT, {
+    onCompleted(data) {
+      publishProduct({ variables: { id: data.updateProduct.id } })
+    }
+  });  
+  const [ publishProduct, { data: publishData, loading: publishLoading, error: publishError } ] = useMutation(PUBLISH_PRODUCT)
 
   const router = useRouter()
 
@@ -23,17 +28,17 @@ export default function Update() {
     }
   }, [router.isReady])
 
-  if (loading) return (
+  if (updateLoading || publishLoading) return (
     <Center bg={mode('white', 'gray.900')} minH="100vh">
       <Spinner size="xl" color="orange.500" />
     </Center> 
   )
-  if (error) console.log(error)
-  if (data) {
+  if (updateError || publishError) console.log(error)
+  if (updateData || publishData) {
     router.push({
       pathname: "/product",
       query: {
-        id: data?.updateProduct?.id,
+        id: updateData?.updateProduct?.id,
         message: "Product Updated Succesfully!"
       }
     })
