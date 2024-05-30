@@ -40,7 +40,7 @@ export default function Home() {
 
   return (
     <AppLayout>  
-      <Container minH="100vh" maxW="container.xl">
+      <Container minH="100vh" maxW="container.xl" position="relative">
         <Image src="../images/foodery-front.jpg" borderRadius="xl" w="full" h="300px" objectFit="cover" alt="Foodery Cake" mb={8} />
         <Heading size="lg" color="orange.500" pb={8}>Food List</Heading>
         {

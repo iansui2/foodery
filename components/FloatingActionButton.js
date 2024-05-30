@@ -5,7 +5,7 @@ import Link from "next/link"
 
 const FloatingActionButton = () => {
   return (
-    <Box position="fixed" bottom="80px" right="150px">
+    <Box position="fixed" bottom="80px" right="35px">
         <Link href="/add">
             <IconButton
                 size="lg"
