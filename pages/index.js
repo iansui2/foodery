@@ -1,11 +1,10 @@
 import { useQuery } from "@apollo/client"
 import { 
-  Container, Heading, Button, Spinner, Image,
-  Center, Table, Thead, Tbody,
-  Tr, Th, Td, TableContainer, useColorModeValue as mode, Stack, 
-  Alert, AlertIcon, AlertTitle, AlertDescription, CloseButton, Box
+  Container, Heading, Button, Spinner, Image, Grid, Text,
+  Center, useColorModeValue as mode, Alert, AlertIcon,
+  AlertTitle, AlertDescription, CloseButton, Box
 } from "@chakra-ui/react"
-import Link from "next/link"
+import FloatingActionButton from "../components/FloatingActionButton"
 import { useRouter } from "next/router"
 import { useEffect } from "react"
 import { GET_PRODUCTS } from "../query/schema"
@@ -42,68 +41,46 @@ export default function Home() {
   return (
     <AppLayout>  
       <Container minH="100vh" maxW="container.xl">
-        <Image src="../images/foodery-front.jpg" borderRadius="xl" w="full" h="50vh" objectFit="cover" alt="Foodery Cake" mb={8} />
-        <Stack direction={{ base: 'column', md: 'row' }} w="full" justify="space-between" spacing={6} pb={8}>
-          <Heading size="lg" color="orange.500">All Food Products</Heading>
-          <Link href="/add">
-            <Button
-              size="md"
-              rounded="full"
-              _hover={{ bg: 'orange.200', transform: 'scale(1.05)', transition: 'all 300ms ease' }}
-              _active={{ bg: 'orange.200' }}
-              _focus={{ borderColor: 'orange.500' }} 
-              bg="orange.500"
-              color="white"
-              leftIcon={<IoAdd color="white" />}
-              mb={8}>Add Product</Button>
-          </Link>
-        </Stack>
+        <Image src="../images/foodery-front.jpg" borderRadius="xl" w="full" h="300px" objectFit="cover" alt="Foodery Cake" mb={8} />
+        <Heading size="lg" color="orange.500" pb={8}>Food List</Heading>
         {
           data?.products ?
-            <TableContainer borderRadius="md" pb={8}>
-              <Table variant="striped" colorScheme="orange">
-                <Thead>
-                  <Tr>
-                    <Th pb={8} fontSize="xl" color={mode('black', 'white')} textTransform="capitalize">Food Name</Th>
-                    <Th pb={8} fontSize="xl" color={mode('black', 'white')} textTransform="capitalize">Food Description</Th>
-                    <Th pb={8} fontSize="xl" color={mode('black', 'white')} textTransform="capitalize">Food Price</Th>
-                    <Th pb={8} fontSize="xl" color={mode('black', 'white')} textTransform="capitalize">Action</Th>
-                  </Tr>
-                </Thead>
-                <Tbody>
-                  {
-                    data?.products.map((item, itemKey) => (
-                      <Tr key={itemKey}>
-                        <Td pb={6} fontWeight="semibold">{item.productName}</Td>
-                        <Td pb={6} width="100px">{item.productDescription}</Td>
-                        <Td pb={6}>{`₱ ${item.price}`}</Td>
-                        <Td pb={6}>                
-                          <Button 
-                            _hover={{ bg: 'orange.200', transform: 'scale(1.05)', transition: 'all 300ms ease' }}
-                            _active={{ bg: 'orange.200' }}
-                            _focus={{ borderColor: 'orange.500' }} 
-                            bg="orange.500"
-                            color="white"
-                            rounded="full"
-                              onClick={() => {
-                              router.push({
-                                pathname: "/product",
-                                query: {
-                                  id: item.id,
-                                  message: ''
-                                }
-                              })
-                            }}>
-                              View
-                          </Button>
-                        </Td>
-                      </Tr>
-                    ))
-                  }
-                </Tbody>
-              </Table>
-            </TableContainer> :
+            <Grid templateColumns={{ base: 'auto', md: 'repeat(2, 1fr)', xl: 'repeat(3, 1fr)' }} gap={6}>
+              {
+                data?.products.map((item, itemKey) => (
+                  <Box key={itemKey} bg="orange.500" boxShadow="2xl" borderRadius="2xl" p={4} display="flex" flexDirection="column" justifyContent="space-between" height="100%">
+                    <div>
+                      <Heading color="white" size="lg" mb={2}>{item.productName}</Heading>
+                      <Text color="white" size="md" mb={2}>{item.productDescription}</Text>
+                      <Text color="white" size="md" mb={4}>{`₱ ${item.price}`}</Text>
+                    </div>
+                    <div>
+                      <Button
+                        size="md"
+                        rounded="full"
+                        bg="orange.300"
+                        color="white"
+                        _hover={{ transform: 'scale(1.05)', transition: 'all 300ms ease' }}
+                        onClick={() => {
+                          router.push({
+                            pathname: "/product",
+                            query: {
+                              id: item.id,
+                              message: ''
+                            }
+                          })
+                        }}>
+                        View
+                      </Button>   
+                    </div>
+                  </Box>    
+                ))
+              }
+            </Grid> :
             <Center><Heading size="lg">No Food Products Found</Heading></Center>
+        }
+        {
+          data?.products && <FloatingActionButton />
         }
         <Alert display={show == true ? 'flex' : 'none'} status='success' py={8}>
           <AlertIcon />
