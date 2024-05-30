@@ -1,6 +1,6 @@
 import { useQuery } from "@apollo/client"
 import { 
-  Container, Heading, Button, Spinner,
+  Container, Heading, Button, Spinner, Image,
   Center, Table, Thead, Tbody,
   Tr, Th, Td, TableContainer, useColorModeValue as mode, Stack, 
   Alert, AlertIcon, AlertTitle, AlertDescription, CloseButton, Box
@@ -42,6 +42,7 @@ export default function Home() {
   return (
     <AppLayout>  
       <Container minH="100vh" maxW="container.xl">
+        <Image src="../images/foodery-front.jpg" borderRadius="xl" w="full" h="50vh" objectFit="cover" alt="Foodery Cake" mb={8} />
         <Stack direction={{ base: 'column', md: 'row' }} w="full" justify="space-between" spacing={6} pb={8}>
           <Heading size="lg" color="orange.500">All Food Products</Heading>
           <Link href="/add">
