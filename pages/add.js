@@ -70,7 +70,7 @@ export default function Add() {
   return (
     <AppLayout>  
       <Box>
-        <Container maxW="container.lg">
+        <Container minH="100vh" maxW="container.lg">
           <HStack spacing={4} mb={8}>
             <Link href="/">
               <IconButton
@@ -85,23 +85,23 @@ export default function Add() {
             </Link>  
             <Heading size="lg" color="orange.500">Add Product</Heading>
           </HStack>
-          <Text mb={2}>Name</Text>
+          <Text mb={2}>Food Title</Text>
           <Input 
-            placeholder="Enter product name"
+            placeholder="Enter food title"
             focusBorderColor="orange.500"
             onChange={(e) => setName(e.target.value)}
             mb={6}
           />
           <Text mb={2}>Description</Text>
           <Textarea 
-            placeholder="Enter product description"
+            placeholder="Enter food description"
             focusBorderColor="orange.500"
             onChange={(e) => setDesc(e.target.value)}
             mb={6}
           />
           <Text mb={2}>Price</Text>
           <Input 
-            placeholder="Enter product price"
+            placeholder="Enter food price"
             value={price}
             focusBorderColor="orange.500"
             min="0"
