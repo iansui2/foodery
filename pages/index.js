@@ -2,7 +2,7 @@ import { useQuery } from "@apollo/client"
 import { 
   Container, Heading, Button, Spinner, Image, Grid, Text,
   Center, useColorModeValue as mode, Alert, AlertIcon,
-  AlertTitle, AlertDescription, CloseButton, Box
+  AlertTitle, AlertDescription, CloseButton, Box, IconButton, Flex
 } from "@chakra-ui/react"
 import FloatingActionButton from "../components/FloatingActionButton"
 import { useRouter } from "next/router"
@@ -11,6 +11,7 @@ import { GET_PRODUCTS } from "../query/schema"
 import { IoAdd } from 'react-icons/io5'
 import { AppLayout } from "../layout/AppLayout"
 import { useState } from "react"
+import { FaEye } from "react-icons/fa";
 
 export default function Home() {
   const { loading, error, data, refetch } = useQuery(GET_PRODUCTS)
@@ -55,23 +56,24 @@ export default function Home() {
                       <Text color="white" size="md" mb={4}>{`₱ ${item.price}`}</Text>
                     </div>
                     <div>
-                      <Button
-                        size="md"
-                        rounded="full"
-                        bg="orange.300"
-                        color="white"
-                        _hover={{ transform: 'scale(1.05)', transition: 'all 300ms ease' }}
-                        onClick={() => {
-                          router.push({
-                            pathname: "/product",
-                            query: {
-                              id: item.id,
-                              message: ''
-                            }
-                          })
-                        }}>
-                        View
-                      </Button>   
+                      <Flex justifyContent="flex-end">
+                        <IconButton
+                          size="md"
+                          rounded="full"
+                          bg="orange.300"
+                          color="white"
+                          icon={<FaEye color="white" size="28px" />}
+                          _hover={{ transform: 'scale(1.05)', transition: 'all 300ms ease' }}
+                          onClick={() => {
+                            router.push({
+                              pathname: "/product",
+                              query: {
+                                id: item.id,
+                                message: ''
+                              }
+                            })
+                          }} /> 
+                      </Flex>
                     </div>
                   </Box>    
                 ))
