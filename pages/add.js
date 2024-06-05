@@ -1,7 +1,7 @@
 import { useMutation } from "@apollo/client"
 import { 
   Box, Container, Heading, Text, Input, Textarea, Button, 
-  Spinner, Center, HStack, IconButton, useDisclosure,
+  Spinner, Center, HStack, IconButton, useDisclosure, Flex,
   useColorModeValue as mode
 } from "@chakra-ui/react"
 import Link from "next/link"
@@ -70,57 +70,62 @@ export default function Add() {
   return (
     <AppLayout>  
       <Box>
-        <Container minH="100vh" maxW="container.lg">
-          <HStack spacing={4} mb={8}>
-            <Link href="/">
+        <Container minH="100vh" maxW="container.xl">
+          <Box bg="orange.500" color="white" boxShadow="2xl" borderRadius="2xl" p={4} height="100%">
+            <Text mb={2}>Food Title</Text>
+            <Input
+              placeholder="Enter food title"
+              focusBorderColor="orange.400"
+              onChange={(e) => setName(e.target.value)}
+              mb={6}
+              sx={{
+                '::placeholder': {
+                  color: 'white',
+                },
+              }}
+            />
+            <Text mb={2}>Description</Text>
+            <Textarea 
+              placeholder="Enter food description"
+              focusBorderColor="orange.400"
+              onChange={(e) => setDesc(e.target.value)}
+              mb={6}
+              sx={{
+                '::placeholder': {
+                  color: 'white',
+                },
+              }}
+            />
+            <Text mb={2}>Price</Text>
+            <Input 
+              placeholder="Enter food price"
+              value={price}
+              focusBorderColor="orange.400"
+              min="0"
+              onChange={(e) => setPrice(safeParseFloat(e.target.value))}
+              mb={6}
+              sx={{
+                '::placeholder': {
+                  color: 'white',
+                },
+              }}
+            />
+            <Flex justifyContent="flex-end">
               <IconButton
-                size="sm"
+                size="lg"
                 rounded="full"
-                _hover={{ bg: 'orange.200', transform: 'scale(1.05)', transition: 'all 300ms ease' }}
-                _active={{ bg: 'orange.200' }}
-                _focus={{ borderColor: 'orange.500' }} 
-                bg="orange.500"
-                icon={<BsArrowLeft color="white" />}
-              />
-            </Link>  
-            <Heading size="lg" color="orange.500">Add Product</Heading>
-          </HStack>
-          <Text mb={2}>Food Title</Text>
-          <Input 
-            placeholder="Enter food title"
-            focusBorderColor="orange.500"
-            onChange={(e) => setName(e.target.value)}
-            mb={6}
-          />
-          <Text mb={2}>Description</Text>
-          <Textarea 
-            placeholder="Enter food description"
-            focusBorderColor="orange.500"
-            onChange={(e) => setDesc(e.target.value)}
-            mb={6}
-          />
-          <Text mb={2}>Price</Text>
-          <Input 
-            placeholder="Enter food price"
-            value={price}
-            focusBorderColor="orange.500"
-            min="0"
-            onChange={(e) => setPrice(safeParseFloat(e.target.value))}
-            mb={6}
-          />
-          <Button
-            size="md"
-            rounded="full"
-            _hover={{ bg: 'orange.200', transform: 'scale(1.05)', transition: 'all 300ms ease' }}
-            _active={{ bg: 'orange.200' }}
-            _focus={{ borderColor: 'orange.500' }} 
-            bg="orange.500"
-            color="white"
-            leftIcon={<IoAdd color="white" />}
-            onClick={(e) => {
-              handleSubmit(e)
-            }}
-            mb={8}>Add Product</Button>
+                _hover={{ bg: 'orange.400', transform: 'scale(1.05)', transition: 'all 300ms ease' }}
+                _active={{ bg: 'orange.400' }}
+                _focus={{ borderColor: 'orange.400' }} 
+                bg="orange.300"
+                color="white"
+                icon={<IoAdd color="white" size="28px" />}
+                onClick={(e) => {
+                  handleSubmit(e)
+                }}
+                mb={8} />
+            </Flex>
+          </Box>
         </Container>
       </Box>
     </AppLayout>  

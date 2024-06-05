@@ -15,7 +15,7 @@ const FloatingActionButton = () => {
                 _focus={{ borderColor: 'orange.300' }} 
                 bg="orange.300"
                 color="white"
-                icon={<IoAdd size="36px" />}
+                icon={<IoAdd size="28px" />}
             />
         </Link>
     </Box>
