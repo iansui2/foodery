@@ -63,7 +63,7 @@ export default function Product() {
   return (
     <AppLayout>
       <Box>
-        <Container maxW="container.lg">
+        <Container minH="100vh" maxW="container.lg">
           <HStack spacing={4} mb={8}>
             <Link href="/">
               <IconButton
