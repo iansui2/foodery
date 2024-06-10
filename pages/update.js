@@ -23,7 +23,8 @@ export default function Update() {
         product.id, 
         product.record.productName, 
         product.record.productDescription,
-        product.record.price
+        product.record.price,
+        product.record.image
       )
     }
   }, [router.isReady])
@@ -33,7 +34,8 @@ export default function Update() {
       <Spinner size="xl" color="orange.500" />
     </Center> 
   )
-  if (updateError || publishError) console.log(error)
+  if (updateError) console.log(updateError)
+  if (publishError) console.log(publishError)
   if (updateData || publishData) {
     router.push({
       pathname: "/product",
@@ -44,14 +46,15 @@ export default function Update() {
     })
   }
 
-  const handleUpdate = (id, title, body, price) => {
+  const handleUpdate = (id, title, body, price, image) => {
     updateProduct({
       variables: {
         id: id,
         record: {
           productName: title,
           productDescription: body,
-          price: price
+          price: price,
+          image: image
         }
       }
     })

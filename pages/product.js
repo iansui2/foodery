@@ -2,17 +2,18 @@ import { useQuery } from "@apollo/client"
 import { 
   Box, Container, Heading, Text, Input, Textarea, Button, HStack, 
   Spinner, Center, IconButton, Alert, AlertIcon, AlertTitle, 
-  AlertDescription, useColorModeValue as mode, CloseButton, Flex
+  AlertDescription, useColorModeValue as mode, CloseButton, Flex, Image
 } from "@chakra-ui/react"
 import Link from "next/link"
 import { useRouter } from "next/router"
-import { useEffect, useState } from "react"
+import { useEffect, useState, useCallback } from "react"
 import { BsArrowLeft } from "react-icons/bs"
 import { MdModeEdit } from "react-icons/md";
 import { AppLayout } from "../layout/AppLayout"
 import { GET_PRODUCT } from "../query/schema"
 import { IoCheckmark } from "react-icons/io5";
 import { MdDelete } from "react-icons/md";
+import { useDropzone } from 'react-dropzone'
 
 export default function Product() {
   const [isUpdate, setIsUpdate] = useState(false)
@@ -22,6 +23,31 @@ export default function Product() {
   const [name, setName] = useState("")
   const [desc, setDesc] = useState("")
   const [price, setPrice] = useState("")
+  const [image, setImage] = useState("")
+  const [updateImage, setUpdateImage] = useState(false)
+  const onDrop = useCallback(async (acceptedFiles) => {
+    const file = acceptedFiles[0];
+    const formData = new FormData();
+
+    formData.append('file', file);
+    formData.append('upload_preset', 'foodery');
+
+    const data = await fetch('https://api.cloudinary.com/v1_1/draaoierp/image/upload', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(responseData => {
+      return responseData;
+    })
+    .catch(err => {
+        console.log(err)
+    });
+    
+    setImage(data.secure_url)
+    setUpdateImage(true)
+  }, [])
+  const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop})
 
   const { loading, error, data, refetch } = useQuery(GET_PRODUCT, {
     variables: {
@@ -46,6 +72,7 @@ export default function Product() {
         setName(data?.product?.productName)  
         setDesc(data?.product?.productDescription)
         setPrice(data?.product?.price)
+        setImage(data?.product?.image)
       }
 
       refetch()
@@ -68,7 +95,31 @@ export default function Product() {
     <AppLayout>
       <Box>
         <Container minH="100vh" maxW="container.xl">
-          <Box bg="orange.500" color="white" boxShadow="2xl" borderRadius="2xl" p={4} height="100%">
+          {
+            isUpdate ? 
+              updateImage === false ?
+                <Box 
+                  borderRadius="2xl" 
+                  border="2px" 
+                  borderStyle="dashed"
+                  display="flex" 
+                  alignItems="center" 
+                  justifyContent="center" 
+                  textAlign="center" 
+                  height="30vh"
+                  mb={8}
+                  cursor="pointer"
+                  {...getRootProps()}
+                >
+                  <Input {...getInputProps()} />
+                  <Text fontSize="xl">Drag and drop your food image here...</Text>
+                </Box>
+              :
+                <Image src={image} alt="food product" borderRadius="2xl" objectFit="cover" crossOrigin="anonymous" height="50vh" w="full" mb={6} />
+              :
+              image && <Image src={image} alt="food product" borderRadius="2xl" objectFit="cover" crossOrigin="anonymous" height="50vh" w="full" mb={6} />
+          }          
+          <Box bg="orange.500" color="white" boxShadow="2xl" borderRadius="2xl" p={4} height="100%">        
             {
               isUpdate ? (
                 <Box>
@@ -154,7 +205,8 @@ export default function Product() {
                             record: {
                               productName: name,
                               productDescription: desc,
-                              price: price
+                              price: price,
+                              image: image
                             }
                           })
                         }

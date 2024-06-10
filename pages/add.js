@@ -2,21 +2,45 @@ import { useMutation } from "@apollo/client"
 import { 
   Box, Container, Heading, Text, Input, Textarea, Button, 
   Spinner, Center, HStack, IconButton, useDisclosure, Flex,
-  useColorModeValue as mode
+  useColorModeValue as mode, Image
 } from "@chakra-ui/react"
 import Link from "next/link"
 import { useRouter } from "next/router"
-import { useState } from "react"
+import { useState, useCallback } from "react"
 import { BsArrowLeft } from "react-icons/bs"
 import { IoAdd } from 'react-icons/io5'
 import { AppLayout } from "../layout/AppLayout"
 import { CREATE_PRODUCT, PUBLISH_PRODUCT } from "../query/schema"
+import { useDropzone } from 'react-dropzone'
 
 export default function Add() {
   const [name, setName] = useState("")
   const [desc, setDesc] = useState("")
   const [price, setPrice] = useState("")
+  const [image, setImage] = useState("")
   const { isOpen, onOpen, onClose } = useDisclosure()
+  const onDrop = useCallback(async (acceptedFiles) => {
+    const file = acceptedFiles[0];
+    const formData = new FormData();
+
+    formData.append('file', file);
+    formData.append('upload_preset', 'foodery');
+
+    const data = await fetch('https://api.cloudinary.com/v1_1/draaoierp/image/upload', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(responseData => {
+      return responseData;
+    })
+    .catch(err => {
+        console.log(err)
+    });
+    
+    setImage(data.secure_url)
+  }, [])
+  const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop})
 
   const [createProduct, { data: createData, loading: createLoading, error: createError }] = useMutation(CREATE_PRODUCT, {
     onCompleted: (data) => {
@@ -56,7 +80,8 @@ export default function Add() {
         record: {
           productName: name,
           productDescription: desc,
-          price: price
+          price: price,
+          image: image
         }
       }
     })
@@ -71,6 +96,27 @@ export default function Add() {
     <AppLayout>  
       <Box>
         <Container minH="100vh" maxW="container.xl">
+          {
+              image === "" ? 
+                <Box 
+                  borderRadius="2xl" 
+                  border="2px" 
+                  borderStyle="dashed"
+                  display="flex" 
+                  alignItems="center" 
+                  justifyContent="center" 
+                  textAlign="center" 
+                  height="30vh"
+                  mb={8}
+                  cursor="pointer"
+                  {...getRootProps()}
+                >
+                  <Input {...getInputProps()} />
+                  <Text fontSize="xl">Drag and drop your food image here...</Text>
+                </Box>
+                :
+                <Image src={image} borderRadius="2xl" alt="food product" crossOrigin="anonymous" height="50vh" w="full" mb={6} />
+          }
           <Box bg="orange.500" color="white" boxShadow="2xl" borderRadius="2xl" p={4} height="100%">
             <Text mb={2}>Food Title</Text>
             <Input

@@ -6,7 +6,8 @@ export const GET_PRODUCT = gql`
       id
       productName
       productDescription
-      price
+      price,
+      image
     }
   }
 `;
@@ -17,7 +18,8 @@ export const GET_PRODUCTS = gql`
       id
       productName
       productDescription
-      price
+      price,
+      image
     }
   }
 `;
@@ -28,7 +30,8 @@ export const CREATE_PRODUCT = gql`
       id,
       productName
       productDescription
-      price
+      price,
+      image
     }
   }
 `;
@@ -42,7 +45,8 @@ export const UPDATE_PRODUCT = gql`
       id,
       productName
       productDescription
-      price
+      price,
+      image
     }
   }
 `;
@@ -55,7 +59,8 @@ export const PUBLISH_PRODUCT = gql`
       id
       productName
       productDescription
-      price
+      price,
+      image
     }
   }
 `;
