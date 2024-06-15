@@ -12,12 +12,28 @@ import { IoAdd } from 'react-icons/io5'
 import { AppLayout } from "../layout/AppLayout"
 import { useState } from "react"
 import { FaEye } from "react-icons/fa";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css"; 
+import "slick-carousel/slick/slick-theme.css";
 
 export default function Home() {
   const { loading, error, data, refetch } = useQuery(GET_PRODUCTS)
   const [show, setShow] = useState(false)
   const [message, setMessage] = useState('')
+  const [featuredFoodList, setFeaturedFoodList] = useState([])
+
   const router = useRouter()
+
+  var settings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 5000,
+    arrows: false
+  };
 
   useEffect(() => {
     if (router.isReady) {
@@ -32,6 +48,19 @@ export default function Home() {
     }
   }, [router.isReady])
 
+  useEffect(() => {
+    if (data?.products) {
+      let randomProducts = [];
+      while (randomProducts.length < 5) {
+        let randomIndex = Math.floor(Math.random() * data.products.length);
+        if (!randomProducts.includes(data.products[randomIndex])) {
+          randomProducts.push(data.products[randomIndex]);
+        }
+      }
+      setFeaturedFoodList(randomProducts);
+    }
+  }, [data?.products])
+
   if (loading) return (
     <Center bg={mode('white', 'gray.900')} minH="100vh">
       <Spinner size="xl" color="orange.500" />
@@ -42,20 +71,35 @@ export default function Home() {
   return (
     <AppLayout>  
       <Container minH="100vh" maxW="container.xl" position="relative">
-        <Image src="../images/foodery-front.jpg" borderRadius="xl" w="full" h="300px" objectFit="cover" alt="Foodery Cake" mb={8} />
-        <Heading size="lg" color="orange.500" pb={8}>Food List</Heading>
+        {
+          featuredFoodList ?
+            <Slider {...settings}>
+              {
+                featuredFoodList.map((item, itemKey) => (
+                  <Box key={item.productName} position="relative">
+                    <Image src={item.image} borderRadius="xl" w="full" h="500px" objectFit="cover" alt="Foodery Cake" mb={8} />
+                    <Text fontSize="2xl" position="absolute" right="3" bottom="12" bg="rgba(0,0,0,0.5)" borderRadius="md" color="white" p={2}>
+                      {item.productName}
+                    </Text>
+                  </Box>
+                ))
+              }
+            </Slider> :
+            <Image src="../images/foodery-front.jpg" borderRadius="xl" w="full" h="300px" objectFit="cover" alt="Foodery Cake" mb={8} />
+        }
+        <Heading size="lg" color="orange.500" py={12}>Food List</Heading>
         {
           data?.products ?
             <Grid templateColumns={{ base: 'auto', md: 'repeat(2, 1fr)', xl: 'repeat(3, 1fr)' }} gap={6}>
               {
                 data?.products.map((item, itemKey) => (
-                  <Box key={itemKey} display="flex" flexDirection="column">
+                  <Box key={item.productName} display="flex" flexDirection="column">
                     {item?.image && <Image src={item.image} borderRadius="2xl" alt="food product" crossOrigin="anonymous" w="full" maxH="250px" objectFit="cover" mb={6} />}   
                     <Box bg="orange.500" boxShadow="2xl" borderRadius="2xl" p={4} display="flex" flexDirection="column" justifyContent="space-between" height="100%">
                       <div>
                         <Heading color="white" size="lg" mb={2}>{item.productName}</Heading>
-                        <Text color="white" size="md" mb={2}>{item.productDescription}</Text>
-                        <Text color="white" size="md" mb={4}>{`₱ ${item.price}`}</Text>
+                        <Text color="white" fontSize="md" mb={2}>{item.productDescription}</Text>
+                        <Text color="white" fontSize="md" mb={4}>{`₱ ${item.price}`}</Text>
                       </div>
                       <div>
                         <Flex justifyContent="flex-end">
