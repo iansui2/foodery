@@ -87,23 +87,23 @@ export default function Add() {
           <VStack spacing={6} align="stretch">
             {image === "" ? (
               <Box
-                borderRadius="2xl"
                 border="2px dashed"
-                borderColor="gray.300"
-                bg={mode("gray.100", "gray.700")}
-                p={10}
+                borderColor="orange.300"
+                borderRadius="2xl"
                 height="30vh"
                 display="flex"
-                textAlign="center"
                 alignItems="center"
                 justifyContent="center"
+                textAlign="center"
+                transition="all 0.3s ease"
+                _hover={{ bg: mode("orange.50", "gray.700"), transform: "scale(1.02)" }}
                 cursor="pointer"
-                transition="all 0.3s"
-                _hover={{ bg: mode("gray.200", "gray.600") }}
                 {...getRootProps()}
+                mb={1}
+                p={4}
               >
                 <Input {...getInputProps()} />
-                <Text fontSize="lg" color="gray.600">Drag and drop your food image here</Text>
+                <Text fontSize="lg" color={mode("gray.600", "gray.200")}>Drag & drop your food image here</Text>
               </Box>
             ) : (
               <Image
@@ -118,20 +118,21 @@ export default function Add() {
             )}
 
             <Box
-              bg="white"
-              _dark={{ bg: "gray.800" }}
-              p={6}
               borderRadius="2xl"
-              shadow="xl"
+              p={6}
+              bg={mode("whiteAlpha.800", "whiteAlpha.100")}
+              backdropFilter="blur(16px)"
+              boxShadow="2xl"
+              color={mode("gray.800", "gray.100")}
+              transition="all 0.3s ease"
             >
               <VStack spacing={5} align="stretch">
                 <Box>
-                  <Text fontWeight="semibold" mb={1}>Food Title</Text>
+                  <Text fontWeight="medium" mb={1}>Food Title</Text>
                   <Input
                     placeholder="Enter food title"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    size="lg"
                     focusBorderColor="orange.400"
                   />
                 </Box>
@@ -142,9 +143,7 @@ export default function Add() {
                     placeholder="Enter food description"
                     value={desc}
                     onChange={(e) => setDesc(e.target.value)}
-                    size="lg"
                     focusBorderColor="orange.400"
-                    resize="vertical"
                   />
                 </Box>
 
@@ -154,7 +153,6 @@ export default function Add() {
                     placeholder="Enter food price"
                     value={price}
                     onChange={(e) => setPrice(safeParseFloat(e.target.value))}
-                    size="lg"
                     focusBorderColor="orange.400"
                     type="number"
                     min="0"

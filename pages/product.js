@@ -179,6 +179,8 @@ export default function Product() {
                   value={price}
                   focusBorderColor="orange.400"
                   onChange={(e) => setPrice(safeParseFloat(e.target.value))}
+                  type="number"
+                  min="0"
                   mb={4}
                 />
               </>
