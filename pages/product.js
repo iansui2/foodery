@@ -94,159 +94,155 @@ export default function Product() {
   return (
     <AppLayout>
       <Box>
-        <Container minH="100vh" maxW="container.xl">
-          {
-            isUpdate ? 
-              updateImage === false ?
-                <Box 
-                  borderRadius="2xl" 
-                  border="2px" 
-                  borderStyle="dashed"
-                  display="flex" 
-                  alignItems="center" 
-                  justifyContent="center" 
-                  textAlign="center" 
-                  height="30vh"
-                  mb={8}
-                  cursor="pointer"
-                  {...getRootProps()}
-                >
-                  <Input {...getInputProps()} />
-                  <Text fontSize="xl">Drag and drop your food image here...</Text>
-                </Box>
-              :
-                <Image src={image} alt="food product" borderRadius="2xl" objectFit="cover" crossOrigin="anonymous" height="50vh" w="full" mb={6} />
-              :
-              image && <Image src={image} alt="food product" borderRadius="2xl" objectFit="cover" crossOrigin="anonymous" height="50vh" w="full" mb={6} />
-          }          
-          <Box bg="orange.500" color="white" boxShadow="2xl" borderRadius="2xl" p={4} height="100%">        
-            {
-              isUpdate ? (
-                <Box>
-                  <Text mb={2}>Food Title</Text>
-                  <Input
-                    placeholder="Enter food title"          
-                    value={name}
-                    focusBorderColor="orange.400" 
-                    onChange={(e) => setName(e.target.value)}
-                    mb={6}
-                    sx={{
-                      '::placeholder': {
-                        color: 'white',
-                      },
-                    }}
-                  />
-                </Box>
-              ) : (
-                <Heading size="lg" mb={6}>{name}</Heading>
-              )
-            }
-            {
-              isUpdate ? (
-                <Box>
-                  <Text mb={2}>Description</Text>
-                  <Textarea 
-                    placeholder="Enter food description"
-                    value={desc}
-                    focusBorderColor="orange.400"
-                    onChange={(e) => setDesc(e.target.value)}
-                    mb={6}
-                    sx={{
-                      '::placeholder': {
-                        color: 'white',
-                      },
-                    }}
-                  />
-                </Box>
-              ) : (
-                <Text size="md" mb={6}>{desc}</Text>
-              )
-            }
-            {
-              isUpdate ? (
-                <Box>
-                  <Text mb={2}>Price</Text>
-                  <Input 
-                    placeholder="Enter food price"
-                    value={price}
-                    focusBorderColor="orange.400"
-                    min="0"
-                    onChange={(e) => setPrice(safeParseFloat(e.target.value))}
-                    mb={6}
-                    sx={{
-                      '::placeholder': {
-                        color: 'white',
-                      },
-                    }}
-                  />
-                </Box>
-              ) : (
-                <Text size="md" mb={6}>₱ {price}</Text>
-              )
-            }
-            <Flex justifyContent="flex-end">
-              <HStack spacing={4}>
-                <IconButton 
-                  size="lg"
-                  _hover={{ bg: 'orange.400', transform: 'scale(1.05)', transition: 'all 300ms ease' }}
-                  _active={{ bg: 'orange.400' }}
-                  _focus={{ borderColor: 'orange.400' }} 
-                  bg="orange.300"
+        <Container minH="100vh" maxW="container.md" py={10}>
+          {isUpdate && !updateImage ? (
+            <Box
+              border="2px dashed"
+              borderColor="orange.300"
+              borderRadius="2xl"
+              height="30vh"
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              textAlign="center"
+              transition="all 0.3s ease"
+              _hover={{ bg: mode("orange.50", "gray.700"), transform: "scale(1.02)" }}
+              cursor="pointer"
+              {...getRootProps()}
+              mb={6}
+              p={4}
+            >
+              <Input {...getInputProps()} />
+              <Text fontSize="lg" color={mode("gray.600", "gray.200")}>
+                Drag & drop your food image here
+              </Text>
+            </Box>
+          ) : (
+            image && (
+              <Image
+                src={image}
+                alt="food product"
+                borderRadius="2xl"
+                objectFit="cover"
+                height="300px"
+                w="full"
+                mb={6}
+                shadow="lg"
+              />
+            )
+          )}
+
+          <Box
+            borderRadius="2xl"
+            p={6}
+            bg={mode("whiteAlpha.800", "whiteAlpha.100")}
+            backdropFilter="blur(16px)"
+            boxShadow="2xl"
+            color={mode("gray.800", "gray.100")}
+            transition="all 0.3s ease"
+          >
+            {isUpdate ? (
+              <>
+                <Text mb={2} fontWeight="medium">Food Title</Text>
+                <Input
+                  placeholder="Enter food title"
+                  value={name}
+                  focusBorderColor="orange.400"
+                  onChange={(e) => setName(e.target.value)}
+                  mb={4}
+                />
+              </>
+            ) : (
+              <Heading fontSize="2xl" mb={4}>{name}</Heading>
+            )}
+
+            {isUpdate ? (
+              <>
+                <Text mb={2} fontWeight="medium">Description</Text>
+                <Textarea
+                  placeholder="Enter food description"
+                  value={desc}
+                  focusBorderColor="orange.400"
+                  onChange={(e) => setDesc(e.target.value)}
+                  mb={4}
+                />
+              </>
+            ) : (
+              <Text mb={4}>{desc}</Text>
+            )}
+
+            {isUpdate ? (
+              <>
+                <Text mb={2} fontWeight="medium">Price</Text>
+                <Input
+                  placeholder="Enter food price"
+                  value={price}
+                  focusBorderColor="orange.400"
+                  onChange={(e) => setPrice(safeParseFloat(e.target.value))}
+                  mb={4}
+                />
+              </>
+            ) : (
+              <Text fontWeight="semibold" fontSize="lg">₱ {price}</Text>
+            )}
+
+            <Flex justifyContent="flex-end" mt={6}>
+              <HStack spacing={3}>
+                <IconButton
+                  aria-label={isUpdate ? "Save" : "Edit"}
+                  icon={isUpdate ? <IoCheckmark size="24px" /> : <MdModeEdit size="24px" />}
+                  bg="orange.400"
                   color="white"
                   rounded="full"
-                  icon={isUpdate ? <IoCheckmark color="white" size="28px" /> : <MdModeEdit color="white" size="28px" />}
-                  onClick={() => {
-                    isUpdate ?
-                      router.push({
-                        pathname: "/update",
-                        query: {
-                          object: JSON.stringify({
-                            id: id,
-                            record: {
-                              productName: name,
-                              productDescription: desc,
-                              price: price,
-                              image: image
-                            }
-                          })
-                        }
-                      })
-                    : setIsUpdate(true)
-                  }} />
-                <IconButton 
                   size="lg"
-                  _hover={{ bg: 'red.300', transform: 'scale(1.05)', transition: 'all 300ms ease' }}
-                  _active={{ bg: 'red.300' }}
-                  _focus={{ borderColor: 'red.500' }} 
+                  _hover={{ bg: "orange.500", transform: "scale(1.05)" }}
+                  onClick={() => {
+                    isUpdate
+                      ? router.push({
+                          pathname: "/update",
+                          query: {
+                            object: JSON.stringify({
+                              id,
+                              record: {
+                                productName: name,
+                                productDescription: desc,
+                                price,
+                                image,
+                              },
+                            }),
+                          },
+                        })
+                      : setIsUpdate(true);
+                  }}
+                />
+                <IconButton
+                  aria-label="Delete"
+                  icon={<MdDelete size="24px" />}
                   bg="red.500"
                   color="white"
                   rounded="full"
-                  icon={<MdDelete color="white" size="28px" />}
-                  onClick={() => {
+                  size="lg"
+                  _hover={{ bg: "red.600", transform: "scale(1.05)" }}
+                  onClick={() =>
                     router.push({
                       pathname: "/remove",
-                      query: {
-                        id: id
-                      }
+                      query: { id },
                     })
-                  }} />
+                  }
+                />
               </HStack>
             </Flex>
-            <Alert display={show == true ? 'flex' : 'none'} status='success' mt={8}>
-              <AlertIcon />
-              <Box>
-                <AlertTitle>Success!</AlertTitle>
-                <AlertDescription>
-                  {message}
-                </AlertDescription>
-                <CloseButton
-                  position='absolute'
-                  right={1}
-                  top={1}
-                  onClick={() => setShow(false)}
-                />
-              </Box>
-            </Alert>
+
+            {show && (
+              <Alert status="success" mt={6} borderRadius="md">
+                <AlertIcon />
+                <Box>
+                  <AlertTitle>Success!</AlertTitle>
+                  <AlertDescription>{message}</AlertDescription>
+                </Box>
+                <CloseButton position="absolute" right={2} top={2} onClick={() => setShow(false)} />
+              </Alert>
+            )}
           </Box>
         </Container>
       </Box>
